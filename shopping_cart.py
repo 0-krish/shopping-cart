@@ -74,28 +74,28 @@ while True:
 today = datetime.now()
 today_string = today.strftime("%Y-%m-%d %I:%M %p")
 
-print("---------------------------------")
-print("GREEN FOODS GROCERY")
-print("WWW.GREEN-FOODS-GROCERY.COM")
-print("---------------------------------")
-print("CHECKOUT AT:", today_string)
-print("---------------------------------")
-print("SELECTED PRODUCTS:")
+print("#> ---------------------------------")
+print("#> GREEN FOODS GROCERY")
+print("#> WWW.GREEN-FOODS-GROCERY.COM")
+print("#> ---------------------------------")
+print("#> CHECKOUT AT:", today_string)
+print("#> ---------------------------------")
+print("#> SELECTED PRODUCTS:")
 
 for selected_id in selected_ids:
     matching_products = [p for p in products if str(p["id"]) == str(selected_id)]
     matching_product = matching_products[0]
     subtotal_price = subtotal_price + matching_product["price"]
-    print("... " + matching_product["name"] + " (" + to_usd(matching_product["price"]) + ")")
+    print("#>  ... " + matching_product["name"] + " (" + to_usd(matching_product["price"]) + ")")
 
 tax_rate = 0.0875  # hard-coded New York City sales tax percentage
 tax_amount = tax_rate * subtotal_price
 total_price = subtotal_price + tax_amount
 
-print("---------------------------------")
-print("SUBTOTAL:", to_usd(subtotal_price))
-print("TAX: " + to_usd(tax_amount))
-print("TOTAL: " + to_usd(total_price))
-print("---------------------------------")
-print("THANKS, SEE YOU AGAIN SOON!")
-print("---------------------------------")
+print("#> ---------------------------------")
+print("#> SUBTOTAL:", to_usd(subtotal_price))
+print("#> TAX: " + to_usd(tax_amount))
+print("#> TOTAL: " + to_usd(total_price))
+print("#> ---------------------------------")
+print("#> THANKS, SEE YOU AGAIN SOON!")
+print("#> ---------------------------------")

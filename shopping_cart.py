@@ -8,6 +8,8 @@
 #   NetID: ks1730
 
 import pandas
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import os
 from dotenv import load_dotenv
@@ -16,13 +18,72 @@ from sendgrid.helpers.mail import Mail
 
 load_dotenv()
 
-csv_filepath = os.path.join(os.getcwd(), "data/products.csv")
-products_csv = pandas.read_csv(csv_filepath)
+print("Would you like to use a .csv file or Google Sheets to store inventory data?")
+print("The default is Google Sheets.")
+storage_choice = input("Enter 'csv' for .csv or 'gs' for Google Sheets: ")
+storage_choice.lower()
 
-# convert DataFrame te list of dictionaries
-# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_dict.html
-products_dict = products_csv.to_dict('records')
+if storage_choice == "csv":
 
+    csv_filepath = os.path.join(os.getcwd(), "data/products.csv")
+    products_csv = pandas.read_csv(csv_filepath)
+
+    # convert DataFrame te list of dictionaries
+    # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_dict.html
+    products_dict = products_csv.to_dict('records')
+
+else:
+
+    products_dict = []
+
+    # code adapted from https://github.com/prof-rossetti/intro-to-python/blob/main/notes/python/packages/gspread.md
+
+    load_dotenv()
+
+    DOCUMENT_ID = os.getenv("GOOGLE_SHEET_ID", default="OOPS")
+    SHEET_NAME = os.getenv("SHEET_NAME", default="Products-2021")
+
+    #
+    # AUTHORIZATION
+    #
+    # see: https://gspread.readthedocs.io/en/latest/api.html#gspread.authorize
+    # ... and FYI there is also a newer, more high level way to do this (see the docs)
+
+    # an OS-agnostic (Windows-safe) way to reference the "auth/google-credentials.json" filepath:
+    CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "google-credentials.json")
+
+    AUTH_SCOPE = [
+        "https://www.googleapis.com/auth/spreadsheets", #> Allows read/write access to the user's sheets and their properties.
+        "https://www.googleapis.com/auth/drive.file" #> Per-file access to files created or opened by the app.
+    ]
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILEPATH, AUTH_SCOPE)
+    print("CREDS:", type(credentials)) #> <class 'oauth2client.service_account.ServiceAccountCredentials'>
+
+    client = gspread.authorize(credentials)
+    print("CLIENT:", type(client)) #> <class 'gspread.client.Client'>
+
+    #
+    # READ SHEET VALUES
+    #
+    # see: https://gspread.readthedocs.io/en/latest/api.html#client
+    # ...  https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Spreadsheet
+    # ...  https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Worksheet
+
+    print("-----------------")
+    print("READING DOCUMENT...")
+
+    doc = client.open_by_key(DOCUMENT_ID)
+    print("DOC:", type(doc), doc.title) #> <class 'gspread.models.Spreadsheet'>
+
+    sheet = doc.worksheet(SHEET_NAME)
+    print("SHEET:", type(sheet), sheet.title)#> <class 'gspread.models.Worksheet'>
+
+    rows = sheet.get_all_records()
+    print("ROWS:", type(rows)) #> <class 'list'>
+
+    for row in rows:
+        products_dict.append(row)
 
 def to_usd(my_price):
     """

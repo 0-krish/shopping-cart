@@ -17,3 +17,7 @@ sendgrid==6.6.0
 
 # for csv file management
 pandas
+
+# for Google Sheets integration
+gspread==3.6.0
+oauth2client==4.1.3

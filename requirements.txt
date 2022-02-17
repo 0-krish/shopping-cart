@@ -1,0 +1,16 @@
+#
+# Requirements.txt
+#
+# Shopping Cart Exercise
+#
+# Author: Krish Sarawgi
+#   Github: "0-krish"
+#   NetID: ks1730
+#
+# this is the requirements file to install dependencies through pip
+
+# to import environment variables
+python-dotenv
+
+# to send customers receipts via email
+sendgrid==6.6.0

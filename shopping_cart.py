@@ -6,6 +6,8 @@
 # Author: Krish Sarawgi
 #   Github: "0-krish"
 #   NetID: ks1730
+#
+# this is the file with all the code for the shopping-cart system
 
 import pandas
 import gspread

@@ -63,7 +63,7 @@ else:
     print("CREDS:", type(credentials)) #> <class 'oauth2client.service_account.ServiceAccountCredentials'>
 
     client = gspread.authorize(credentials)
-    print("CLIENT:", type(client)) #> <class 'gspread.client.Client'>
+    print("CLIENT:", type(client)) #> <class 'gspread.client.Client'>s
 
     #
     # READ SHEET VALUES
@@ -72,17 +72,12 @@ else:
     # ...  https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Spreadsheet
     # ...  https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Worksheet
 
-    print("-----------------")
+    print("---------------------------------")
     print("READING DOCUMENT...")
 
     doc = client.open_by_key(DOCUMENT_ID)
-    print("DOC:", type(doc), doc.title) #> <class 'gspread.models.Spreadsheet'>
-
     sheet = doc.worksheet(SHEET_NAME)
-    print("SHEET:", type(sheet), sheet.title)#> <class 'gspread.models.Worksheet'>
-
     rows = sheet.get_all_records()
-    print("ROWS:", type(rows)) #> <class 'list'>
 
     for row in rows:
         products_dict.append(row)
